@@ -39,57 +39,25 @@ jobs:
           - name: "macOS ARM64"
             os: macos-latest
             artifact_name: dbc2dbf-macos-arm64
-            cflags: -arch arm64
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v6.0.2
 
-      - name: Install dependencies (Windows)
-        if: runner.os == 'Windows'
-        run: choco install mingw
+      - name: Build
+        run: cargo build --release
 
-      - name: Install dependencies (Linux)
-        if: runner.os == 'Linux'
-        run: sudo apt-get update && sudo apt-get install -y gcc make
-
-      - name: Install dependencies (macOS)
-        if: runner.os == 'macOS'
-        run: command -v make || brew install make
-
-      - name: Build (Windows)
-        if: runner.os == 'Windows'
-        shell: bash
-        run: make clean && make
-
-      - name: Build (Linux/macOS)
-        if: runner.os != 'Windows' && matrix.name != 'macOS ARM64'
-        run: make clean && make
-
-      - name: Build (macOS ARM64)
-        if: matrix.name == 'macOS ARM64'
-        run: make clean && make CC=clang CFLAGS="${{ matrix.cflags }}"
-
-      - name: Test (Windows)
-        if: runner.os == 'Windows'
-        shell: bash
-        run: |
-          rm -f out.dbf
-          ./dbc2dbf.exe sids.dbc out.dbf
-          cmp out.dbf sids.dbf
-
-      - name: Test (Unix)
-        if: runner.os != 'Windows'
-        run: make test
+      - name: Test
+        run: cargo test --release
 
       - name: Rename artifact (Windows)
         if: runner.os == 'Windows'
         shell: bash
-        run: mv dbc2dbf.exe "${{ matrix.artifact_name }}"
+        run: mv target/release/dbc2dbf.exe "${{ matrix.artifact_name }}"
 
       - name: Rename artifact (Unix)
         if: runner.os != 'Windows'
-        run: mv dbc2dbf "${{ matrix.artifact_name }}"
+        run: mv target/release/dbc2dbf "${{ matrix.artifact_name }}"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v7.0.1
