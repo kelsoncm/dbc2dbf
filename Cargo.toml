@@ -1,0 +1,8 @@
+[package]
+name = "dbc2dbf"
+version = "1.0.0"
+edition = "2021"
+
+[[bin]]
+name = "dbc2dbf"
+path = "dbc2dbf.rs"

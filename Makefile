@@ -1,20 +1,28 @@
-TARGET = blast-dbf
-CC ?= cc
-CFLAGS ?=
+.PHONY: all build test coverage clean
 
-ifeq ($(OS),Windows_NT)
-    TARGET := $(TARGET).exe
-endif
+all: build
 
-$(TARGET): blast-dbf.c blast.c blast.h
-	$(CC) $(CFLAGS) -o $(TARGET) blast.c blast-dbf.c
+build:
+	cargo build --release
 
-test: $(TARGET)
+test: build
 ifeq ($(OS),Windows_NT)
 	@echo "Skipping test on Windows"
 else
-	./$(TARGET) < sids.dbc | cmp - sids.dbf
+	cargo run --release -- tests/sids.dbc tests/sids_out.dbf
+	cmp tests/sids_out.dbf tests/sids.dbf
+endif
+
+coverage:
+ifeq ($(OS),Windows_NT)
+	@echo "Skipping coverage on Windows"
+else
+	@echo "=== Instalando cargo-tarpaulin ==="
+	cargo install cargo-tarpaulin || true
+	@echo "=== Validando meta de 97% de cobertura com tarpaulin ==="
+	cargo tarpaulin --fail-under 97 --out Html
 endif
 
 clean:
-	rm -f blast-dbf blast-dbf.exe *.o
+	cargo clean
+	rm -f tests/sids_out.dbf tarpaulin-report.html
