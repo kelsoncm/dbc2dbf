@@ -1,23 +1,22 @@
-blast-dbf
-=========
+# dbc2dbf 🦀
 
-`blast-dbf` is a command line utility to convert DBC files to DBF (file format from the XBASE family of databases).
+`dbc2dbf` é um utilitário de linha de comando de alta velocidade escrito em Rust para converter e descompactar arquivos DATASUS DBC no formato de banco de dados DBF.
 
-The DBC file format is basically a compressed DBF file using the PKWare's Data Compression Library (DCL) "implode" algorithm.
+O formato DBC (utilizado amplamente pelo Ministério da Saúde / DATASUS no Brasil) consiste em arquivos DBF compactados com o algoritmo "implode" da PKWare's Data Compression Library (DCL).
 
-This decompression utility is based on the [blast decompressor](https://github.com/madler/zlib/tree/master/contrib/blast) by Mark Adler <madler@alumni.caltech.edu>.
-
-## Usage
-
-
-Just run the `blast-dbf` command line utility with the input filename (DBC) followed by the output filename (DBF):
+## Uso
 
 ```bash
-./blast-dbf input.dbc output.dbf
+# Compilar via Cargo
+cargo build --release
+
+# Executar a conversão de DBC para DBF
+./target/release/dbc2dbf input.dbc output.dbf
 ```
 
-## Example
+---
 
-```bash
-./blast-dbf < sids.dbc | cmp - sids.dbf
-```
+## Desenvolvimento Local & Documentação
+
+- **Desenvolvimento Local:** Para orquestração do ambiente de desenvolvimento local, utilize o repositório privado **[workspace](git@github.com:abrasileirado/workspace.git)**.
+- **Documentação da Suíte:** Acesse o portal oficial da organização em **[https://abrasileirado.github.io](https://abrasileirado.github.io)**.
